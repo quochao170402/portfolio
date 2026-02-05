@@ -37,7 +37,7 @@ const Hero: React.FC = () => {
             </h2>
             
             <p className="text-gray-400 text-lg md:text-xl leading-relaxed max-w-xl mb-10 border-l-2 border-gray-700 pl-6">
-              {profile.summary.substring(0, 150)}...
+              {profile.shortSummary}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-5 mb-12">
