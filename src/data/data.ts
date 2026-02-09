@@ -10,6 +10,7 @@ export const profile: Profile = {
   name: "Bui Quoc Hao",
   role: "Software Engineer",
   email: "quochao170402@gmail.com",
+  phone: "+84 999 999 999",
   location: "Ho Chi Minh City, Vietnam",
   summary:
     "Results-driven Software Engineer with 3.5 years of experience architecting scalable backend systems and modern frontend applications. Expert in the .NET ecosystem and microservices. Dedicated to mastering cloud technologies (GCP/Azure/AWS) to become a Solution Architect. Passionate about solving complex technical challenges, continuous learning, and building high-performance, large-scale systems.",
@@ -256,7 +257,7 @@ export const projects: ProjectItem[] = [
     description:
       "IoT control panel for managing smart home devices with voice integration.",
     longDescription:
-      "A centralized hub for controlling various smart home protocol devices. Integates with Alexa and Google Home for voice commands and provides automation routines.",
+      "A centralized hub for controlling various smart home protocol devices. Integrates with Alexa and Google Home for voice commands and provides automation routines.",
     tech: ["IoT", "Node.js", "MQTT", "React"],
     type: "Work",
     architecture: ["Event-Driven", "Pub/Sub"],

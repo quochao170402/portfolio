@@ -10,7 +10,7 @@ const Navbar: React.FC = () => {
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
-      
+
       // Check if user is at the bottom of the page
       if ((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 50) {
         setActiveSection('contact');
@@ -44,15 +44,19 @@ const Navbar: React.FC = () => {
   ];
 
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'py-4' : 'py-6'}`}>
+    <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'py-4' : 'py-6'}`} aria-label="Main navigation">
       <div className={`mx-auto px-6 transition-all duration-300 ${scrolled ? 'container' : 'container'}`}>
         <div className={`
           flex justify-between items-center rounded-2xl px-6 py-3 transition-all duration-300
-          ${scrolled 
-            ? 'bg-gray-900/60 backdrop-blur-md border border-white/10 shadow-2xl shadow-black/20' 
+          ${scrolled
+            ? 'bg-gray-900/60 backdrop-blur-md border border-white/10 shadow-2xl shadow-black/20'
             : 'bg-transparent'}
         `}>
-          <a href="#" className="text-2xl font-bold font-sans tracking-tight text-white group">
+          <a
+            href="#"
+            aria-label="QuocHao - Go to homepage"
+            className="text-2xl font-bold font-sans tracking-tight text-white group focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-lg"
+          >
             Quoc<span className="text-rose-500 group-hover:text-rose-400 transition-colors duration-300">Hao</span>
           </a>
 
@@ -62,12 +66,14 @@ const Navbar: React.FC = () => {
               <a
                 key={link.name}
                 href={link.href}
-                className={`relative px-4 py-2 text-sm font-medium transition-colors group overflow-hidden rounded-full hover:bg-white/5 
+                aria-label={`Navigate to ${link.name}`}
+                aria-current={activeSection === link.id ? 'page' : undefined}
+                className={`relative px-4 py-2 text-sm font-medium transition-colors group overflow-hidden rounded-full hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 focus:ring-offset-gray-900
                   ${activeSection === link.id ? 'text-white' : 'text-gray-400 hover:text-white'}`}
               >
                 <span className="relative z-10">{link.name}</span>
                 {activeSection === link.id && (
-                  <motion.span 
+                  <motion.span
                     layoutId="activeNav"
                     className="absolute inset-0 bg-white/10 rounded-full"
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
@@ -77,7 +83,8 @@ const Navbar: React.FC = () => {
             ))}
             <a
               href="#contact"
-              className="ml-4 px-6 py-2.5 bg-rose-600 text-white text-sm font-semibold rounded-full hover:bg-rose-500 transition-all shadow-lg shadow-rose-600/20 hover:shadow-rose-600/40 active:scale-95"
+              aria-label="Hire me - Navigate to contact section"
+              className="ml-4 px-6 py-2.5 bg-rose-600 text-white text-sm font-semibold rounded-full hover:bg-rose-500 transition-all shadow-lg shadow-rose-600/20 hover:shadow-rose-600/40 active:scale-95 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 focus:ring-offset-gray-900"
             >
               Hire Me
             </a>
@@ -85,8 +92,11 @@ const Navbar: React.FC = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden text-white p-2 rounded-lg hover:bg-white/10 transition-colors"
+            className="md:hidden text-white p-2 rounded-lg hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-rose-500"
             onClick={() => setIsOpen(!isOpen)}
+            aria-label={isOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={isOpen}
+            aria-controls="mobile-menu"
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -97,6 +107,7 @@ const Navbar: React.FC = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            id="mobile-menu"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
@@ -107,7 +118,9 @@ const Navbar: React.FC = () => {
                 <a
                   key={link.name}
                   href={link.href}
-                  className={`text-lg font-medium p-2 rounded-lg transition-colors
+                  aria-label={`Navigate to ${link.name}`}
+                  aria-current={activeSection === link.id ? 'page' : undefined}
+                  className={`text-lg font-medium p-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-rose-500
                      ${activeSection === link.id ? 'text-rose-500 bg-white/5' : 'text-gray-300 hover:text-rose-500 hover:bg-white/5'}`}
                   onClick={() => setIsOpen(false)}
                 >

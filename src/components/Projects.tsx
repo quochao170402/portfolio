@@ -1,21 +1,31 @@
 import { ArrowUpRight, X, Layers, CheckCircle } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { projects } from '../data/data';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ProjectItem } from '../types';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 const Projects: React.FC = () => {
   const [filter, setFilter] = useState<string>('All');
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
+  const modalRef = useFocusTrap(!!selectedProject);
   const categories = ['All', 'Work', 'Freelance'];
 
-  const filteredProjects = filter === 'All' 
-    ? projects 
+  const filteredProjects = filter === 'All'
+    ? projects
     : projects.filter(p => p.type === filter);
 
+  // Handle Escape key to close modal
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && selectedProject) {
+        setSelectedProject(null);
+      }
+    };
 
-
-
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [selectedProject]);
 
   return (
     <section id="projects" className="py-32 bg-gray-900/30 overflow-hidden">
@@ -30,17 +40,19 @@ const Projects: React.FC = () => {
                 Explore a collection of my latest projects. Drag or scroll to view more.
             </p>
           </div>
-          
+
           {/* Controls & Filter */}
           <div className="flex flex-col items-end gap-4">
-              <div className="flex p-1 bg-gray-900/50 border border-white/5 rounded-xl backdrop-blur-sm">
+              <div className="flex p-1 bg-gray-900/50 border border-white/5 rounded-xl backdrop-blur-sm" role="group" aria-label="Project filter">
                 {categories.map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setFilter(cat)}
-                    className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 ${
-                      filter === cat 
-                        ? 'bg-rose-600 text-white shadow-lg shadow-rose-900/20' 
+                    aria-label={`Filter projects by ${cat}`}
+                    aria-pressed={filter === cat}
+                    className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 focus:ring-offset-gray-900 ${
+                      filter === cat
+                        ? 'bg-rose-600 text-white shadow-lg shadow-rose-900/20'
                         : 'text-gray-400 hover:text-white hover:bg-white/5'
                     }`}
                   >
@@ -53,31 +65,40 @@ const Projects: React.FC = () => {
       </div>
 
       {/* Carousel Track */}
-      <div 
+      <div
         className="w-full overflow-x-auto pb-12 pt-4 snap-x snap-mandatory scrollbar-hide"
         style={{ scrollBehavior: 'smooth' }}
-      > 
-         <div 
+      >
+         <div
             className="flex gap-6 px-6 md:px-12 w-max"
          >
             {filteredProjects.map((project, index) => (
-              <motion.div 
+              <motion.div
                 key={`${project.title}-${index}`}
                 layoutId={`project-${project.title}-${index}`}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
+                role="button"
+                tabIndex={0}
+                aria-label={`View details for ${project.title}`}
                 onClick={() => setSelectedProject(project)}
-                className="snap-center min-w-[260px] md:min-w-[300px] lg:min-w-[320px] group rounded-2xl bg-gray-900 border border-white/5 overflow-hidden hover:border-rose-500/30 transition-all duration-300 hover:shadow-2xl hover:shadow-rose-900/10 flex flex-col cursor-pointer relative"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setSelectedProject(project);
+                  }
+                }}
+                className="snap-center min-w-[260px] md:min-w-[300px] lg:min-w-[320px] group rounded-2xl bg-gray-900 border border-white/5 overflow-hidden hover:border-rose-500/30 transition-all duration-300 hover:shadow-2xl hover:shadow-rose-900/10 flex flex-col cursor-pointer relative focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 focus:ring-offset-gray-900"
               >
                 <div className="h-40 md:h-48 overflow-hidden relative">
                   <div className="absolute inset-0 bg-gray-900/20 group-hover:bg-transparent transition-colors z-10"></div>
-                  <img 
-                    src={`https://placehold.co/800x600/1f2937/white?text=${project.title.split(' ')[0]}`} 
-                    alt={project.title}
+                  <img
+                    src={`https://placehold.co/800x600/1f2937/white?text=${project.title.split(' ')[0]}`}
+                    alt={`${project.title} project preview`}
                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 filter grayscale group-hover:grayscale-0"
                   />
-                  
+
                   <div className="absolute top-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0 duration-300">
                       <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-gray-900 hover:bg-rose-500 hover:text-white transition-colors shadow-lg">
                           <ArrowUpRight size={16} />
@@ -90,7 +111,7 @@ const Projects: React.FC = () => {
                      </span>
                   </div>
                 </div>
-                
+
                 <div className="p-4 md:p-5 flex flex-col flex-grow">
                   <div className="flex justify-between items-start mb-3">
                      <div>
@@ -98,11 +119,11 @@ const Projects: React.FC = () => {
                         {project.company && <p className="text-rose-400 text-xs font-medium mt-0.5">{project.company}</p>}
                      </div>
                   </div>
-                  
+
                   <p className="text-gray-400 mb-4 leading-relaxed flex-grow line-clamp-2 text-sm">
                     {project.description}
                   </p>
-                  
+
                   <div className="flex flex-wrap gap-1.5 pt-4 border-t border-gray-800">
                     {project.tech.slice(0, 3).map((tech: string, i: number) => (
                       <span key={i} className="text-[10px] font-semibold text-rose-300 bg-rose-500/10 px-2 py-0.5 rounded-full">
@@ -132,6 +153,10 @@ const Projects: React.FC = () => {
               onClick={() => setSelectedProject(null)}
             >
               <motion.div
+                ref={modalRef}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="modal-title"
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -139,9 +164,10 @@ const Projects: React.FC = () => {
                 className="bg-gray-900 border border-white/10 rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl relative flex flex-col"
               >
                 {/* Close Button */}
-                <button 
+                <button
                    onClick={() => setSelectedProject(null)}
-                   className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-rose-600 rounded-full text-white transition-colors z-20"
+                   aria-label="Close project details"
+                   className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-rose-600 rounded-full text-white transition-colors z-20 focus:outline-none focus:ring-2 focus:ring-rose-500"
                 >
                    <X size={24} />
                 </button>
@@ -149,16 +175,16 @@ const Projects: React.FC = () => {
                 {/* Hero Image */}
                 <div className="relative h-64 md:h-80 w-full shrink-0">
                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent z-10" />
-                   <img 
+                   <img
                       src={selectedProject.images?.[0] || `https://placehold.co/1200x800/1f2937/white?text=${selectedProject.title}`}
-                      alt={selectedProject.title}
+                      alt={`${selectedProject.title} project hero image`}
                       className="w-full h-full object-cover"
                    />
                    <div className="absolute bottom-6 left-6 md:left-10 z-20">
                       <span className="px-3 py-1 bg-rose-600 text-white text-xs font-bold uppercase tracking-wider rounded-full mb-3 inline-block">
                          {selectedProject.type}
                       </span>
-                      <h2 className="text-3xl md:text-5xl font-bold text-white mb-2">{selectedProject.title}</h2>
+                      <h2 id="modal-title" className="text-3xl md:text-5xl font-bold text-white mb-2">{selectedProject.title}</h2>
                       {selectedProject.company && <p className="text-xl text-gray-300 font-medium">{selectedProject.company}</p>}
                    </div>
                 </div>
@@ -224,10 +250,10 @@ const Projects: React.FC = () => {
                          <div className="grid md:grid-cols-2 gap-4">
                             {selectedProject.images.slice(1).map((img, i) => (
                                <div key={i} className="rounded-xl overflow-hidden border border-white/10 group">
-                                  <img 
-                                     src={img} 
-                                     alt="Project Screenshot" 
-                                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                                  <img
+                                     src={img}
+                                     alt={`${selectedProject.title} screenshot ${i + 2}`}
+                                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                   />
                                </div>
                             ))}

@@ -11,9 +11,9 @@ const About: React.FC = () => {
           <div className="relative group">
             <div className="absolute inset-0 bg-gradient-to-br from-rose-600 to-orange-600 rounded-2xl blur-xl opacity-20 group-hover:opacity-30 transition-opacity"></div>
             <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-gray-900 shadow-2xl">
-               <img 
-                 src="https://placehold.co/800x600/111827/white?text=About+Image" 
-                 alt="Working"
+               <img
+                 src="https://placehold.co/800x600/111827/white?text=About+Image"
+                 alt="Software engineer collaborating on development projects"
                  className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105"
                />
                

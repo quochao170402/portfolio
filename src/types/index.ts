@@ -7,6 +7,7 @@ export interface Profile {
   name: string;
   role: string;
   email: string;
+  phone?: string;
   location: string;
   summary: string;
   shortSummary?: string;
