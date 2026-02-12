@@ -37,7 +37,7 @@ const Hero: React.FC = () => {
             </h2>
             
             <p className="text-gray-400 text-base sm:text-lg md:text-xl leading-relaxed max-w-xl mb-10 border-l-2 border-gray-700 pl-6">
-              {profile.summary.substring(0, 150)}...
+              {profile.shortSummary}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-5 mb-12">
@@ -74,9 +74,9 @@ const Hero: React.FC = () => {
               {/* Profile Image Container */}
               <div className="absolute inset-10 rounded-full overflow-hidden border-2 border-white/10 bg-gray-900 shadow-2xl relative z-10 group">
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-60 z-20 group-hover:opacity-40 transition-opacity" />
-                <img 
-                   src="https://placehold.co/600x600/111827/white?text=QH" 
-                   alt={profile.name}
+                <img
+                   src="https://placehold.co/600x600/111827/white?text=QH"
+                   alt={`Portrait of ${profile.name}, ${profile.role}`}
                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-110"
                 />
               </div>

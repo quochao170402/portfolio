@@ -1,8 +1,10 @@
 import emailjs from '@emailjs/browser';
-import { ArrowRight, Mail, MapPin, Phone } from 'lucide-react';
+import { ArrowRight, Mail, MapPin, Phone, Loader2 } from 'lucide-react';
 import React, { useRef, useState } from 'react';
 import { profile } from '../data/data';
 import { ContactFormState } from '../types';
+import { validateContactForm, type ContactFormData } from '../utils/validation';
+import { checkRateLimit, incrementRateLimit } from '../utils/rateLimit';
 
 const Contact: React.FC = () => {
     const form = useRef<HTMLFormElement>(null);
@@ -13,14 +15,45 @@ const Contact: React.FC = () => {
         subject: '',
         message: ''
     });
+    const [errors, setErrors] = useState<Record<string, string>>({});
     const [status, setStatus] = useState<string>('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+
+        // Clear error for this field when user starts typing
+        if (errors[name]) {
+            setErrors({ ...errors, [name]: '' });
+        }
     };
 
     const sendEmail = (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Clear previous errors and status
+        setErrors({});
+        setStatus('');
+
+        // Validate form
+        const validationErrors = validateContactForm(formData as ContactFormData);
+        if (validationErrors.length > 0) {
+            const errorMap: Record<string, string> = {};
+            validationErrors.forEach(err => errorMap[err.field] = err.message);
+            setErrors(errorMap);
+            setStatus('Please fix the errors above.');
+            return;
+        }
+
+        // Check rate limit
+        const rateLimitCheck = checkRateLimit();
+        if (!rateLimitCheck.allowed) {
+            setStatus(`Too many attempts. Please try again in ${rateLimitCheck.remainingTime} minutes.`);
+            return;
+        }
+
+        setIsSubmitting(true);
         setStatus('Sending...');
 
         if (!form.current) return;
@@ -31,7 +64,7 @@ const Contact: React.FC = () => {
 
         if (!serviceId || !templateId || !publicKey) {
             setStatus('Configuration error. Please check environment variables.');
-            console.error('Missing EmailJS environment variables');
+            setIsSubmitting(false);
             return;
         }
 
@@ -45,7 +78,9 @@ const Contact: React.FC = () => {
             .then(
                 () => {
                     setStatus('Message sent successfully!');
-                    form.current?.reset(); 
+                    setIsSubmitting(false);
+                    incrementRateLimit();
+                    form.current?.reset();
                     setFormData({
                         name: '',
                         phone: '',
@@ -54,9 +89,9 @@ const Contact: React.FC = () => {
                         message: ''
                     });
                 },
-                (error) => {
+                () => {
                     setStatus('Failed to send message. Please try again.');
-                    console.error('FAILED...', error.text);
+                    setIsSubmitting(false);
                 }
             );
     };
@@ -79,38 +114,103 @@ const Contact: React.FC = () => {
                         <div className="space-y-8">
                             <ContactItem icon={<MapPin size={24} />} title="Location" value={profile.location} />
                             <ContactItem icon={<Mail size={24} />} title="Email" value={profile.email} size="lg" link={`mailto:${profile.email}`} />
-                            <ContactItem icon={<Phone size={24} />} title="Phone" value="+84 999 999 999" />
+                            <ContactItem icon={<Phone size={24} />} title="Phone" value={profile.phone || "+84 999 999 999"} />
                         </div>
                     </div>
 
                     {/* Form Column */}
                     <div className="lg:col-span-3">
                         <div className="bg-gray-900 border border-white/5 p-8 md:p-10 rounded-3xl shadow-2xl">
-                            <form ref={form} onSubmit={sendEmail} className="space-y-6">
+                            <form ref={form} onSubmit={sendEmail} className="space-y-6" noValidate>
                                 <div className="grid md:grid-cols-2 gap-6">
-                                    <InputGroup label="Your Name" name="name" value={formData.name} onChange={handleChange} placeholder="John Doe" />
-                                    <InputGroup label="Phone Number" name="phone" value={formData.phone} onChange={handleChange} placeholder="+84 000 000 000" />
+                                    <InputGroup
+                                        label="Your Name"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        placeholder="John Doe"
+                                        required
+                                        error={errors.name}
+                                    />
+                                    <InputGroup
+                                        label="Phone Number"
+                                        name="phone"
+                                        value={formData.phone}
+                                        onChange={handleChange}
+                                        placeholder="+84 000 000 000"
+                                        error={errors.phone}
+                                    />
                                 </div>
 
-                                <InputGroup label="Email Address" type="email" name="email" value={formData.email} onChange={handleChange} placeholder="john@example.com" />
-                                <InputGroup label="Subject" name="subject" value={formData.subject} onChange={handleChange} placeholder="Project Inquiry" />
+                                <InputGroup
+                                    label="Email Address"
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    placeholder="john@example.com"
+                                    required
+                                    error={errors.email}
+                                />
+                                <InputGroup
+                                    label="Subject"
+                                    name="subject"
+                                    value={formData.subject}
+                                    onChange={handleChange}
+                                    placeholder="Project Inquiry"
+                                    required
+                                    error={errors.subject}
+                                />
 
                                 <div className="space-y-2">
-                                    <label className="text-gray-400 font-medium text-sm ml-1">Message</label>
+                                    <label htmlFor="message" className="text-gray-400 font-medium text-sm ml-1">
+                                        Message <span className="text-rose-500">*</span>
+                                    </label>
                                     <textarea
+                                        id="message"
                                         name="message"
                                         rows={5}
                                         value={formData.message}
                                         onChange={handleChange}
                                         placeholder="Tell me about your project..."
-                                        className="w-full bg-gray-950/50 border border-gray-800 rounded-xl px-4 py-4 text-gray-200 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-all resize-none placeholder-gray-600"
+                                        required
+                                        aria-required="true"
+                                        aria-invalid={!!errors.message}
+                                        aria-describedby={errors.message ? 'message-error' : undefined}
+                                        className={`w-full bg-gray-950/50 border ${errors.message ? 'border-rose-500' : 'border-gray-800'} rounded-xl px-4 py-4 text-gray-200 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-all resize-none placeholder-gray-600`}
                                     ></textarea>
+                                    {errors.message && (
+                                        <p id="message-error" className="text-rose-500 text-sm ml-1" role="alert">
+                                            {errors.message}
+                                        </p>
+                                    )}
                                 </div>
 
-                                <button type="submit" className="w-full bg-gradient-to-r from-rose-600 to-rose-500 text-white font-bold py-5 rounded-xl hover:shadow-lg hover:shadow-rose-500/25 transition-all transform hover:-translate-y-1 flex justify-center items-center gap-3">
-                                    {status === 'Sending...' ? 'Sending...' : 'Send Message'} <ArrowRight size={20} />
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className="w-full bg-gradient-to-r from-rose-600 to-rose-500 text-white font-bold py-5 rounded-xl hover:shadow-lg hover:shadow-rose-500/25 transition-all transform hover:-translate-y-1 flex justify-center items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                                >
+                                    {isSubmitting ? (
+                                        <>
+                                            <Loader2 size={20} className="animate-spin" />
+                                            Sending...
+                                        </>
+                                    ) : (
+                                        <>
+                                            Send Message <ArrowRight size={20} />
+                                        </>
+                                    )}
                                 </button>
-                                {status && <p className="text-center text-sm mt-4 text-gray-300">{status}</p>}
+                                {status && (
+                                    <p
+                                        className={`text-center text-sm mt-4 ${status.includes('success') ? 'text-green-500' : status.includes('error') || status.includes('Failed') || status.includes('fix') ? 'text-rose-500' : 'text-gray-300'}`}
+                                        role="status"
+                                        aria-live="polite"
+                                    >
+                                        {status}
+                                    </p>
+                                )}
                             </form>
                         </div>
                     </div>
@@ -151,19 +251,33 @@ interface InputGroupProps {
     value: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     placeholder: string;
+    required?: boolean;
+    error?: string;
 }
 
-const InputGroup: React.FC<InputGroupProps> = ({ label, type = "text", name, value, onChange, placeholder }) => (
+const InputGroup: React.FC<InputGroupProps> = ({ label, type = "text", name, value, onChange, placeholder, required = false, error }) => (
     <div className="space-y-2">
-        <label className="text-gray-400 font-medium text-sm ml-1">{label}</label>
+        <label htmlFor={name} className="text-gray-400 font-medium text-sm ml-1">
+            {label} {required && <span className="text-rose-500">*</span>}
+        </label>
         <input
+            id={name}
             type={type}
             name={name}
             value={value}
             onChange={onChange}
             placeholder={placeholder}
-            className="w-full bg-gray-950/50 border border-gray-800 rounded-xl px-4 py-4 text-gray-200 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-all placeholder-gray-600"
+            required={required}
+            aria-required={required}
+            aria-invalid={!!error}
+            aria-describedby={error ? `${name}-error` : undefined}
+            className={`w-full bg-gray-950/50 border ${error ? 'border-rose-500' : 'border-gray-800'} rounded-xl px-4 py-4 text-gray-200 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-all placeholder-gray-600`}
         />
+        {error && (
+            <p id={`${name}-error`} className="text-rose-500 text-sm ml-1" role="alert">
+                {error}
+            </p>
+        )}
     </div>
 );
 
