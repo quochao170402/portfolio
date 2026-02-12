@@ -69,7 +69,7 @@ const Contact: React.FC = () => {
                     {/* Info Column */}
                     <div className="lg:col-span-2">
                         <span className="text-rose-500 font-bold uppercase tracking-widest text-sm mb-3 block">Get In Touch</span>
-                        <h2 className="text-4xl md:text-5xl font-bold text-white mb-8">
+                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-8">
                             Let's Work <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-orange-500">Together!</span>
                         </h2>
                         <p className="text-gray-400 text-lg mb-12 leading-relaxed">
@@ -103,7 +103,7 @@ const Contact: React.FC = () => {
                                         value={formData.message}
                                         onChange={handleChange}
                                         placeholder="Tell me about your project..."
-                                        className="w-full bg-gray-950/50 border border-gray-800 rounded-xl px-4 py-3 text-gray-200 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-all resize-none placeholder-gray-600"
+                                        className="w-full bg-gray-950/50 border border-gray-800 rounded-xl px-4 py-4 text-gray-200 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-all resize-none placeholder-gray-600"
                                     ></textarea>
                                 </div>
 
@@ -162,7 +162,7 @@ const InputGroup: React.FC<InputGroupProps> = ({ label, type = "text", name, val
             value={value}
             onChange={onChange}
             placeholder={placeholder}
-            className="w-full bg-gray-950/50 border border-gray-800 rounded-xl px-4 py-3 text-gray-200 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-all placeholder-gray-600"
+            className="w-full bg-gray-950/50 border border-gray-800 rounded-xl px-4 py-4 text-gray-200 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-all placeholder-gray-600"
         />
     </div>
 );

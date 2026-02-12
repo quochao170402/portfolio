@@ -39,7 +39,7 @@ const About: React.FC = () => {
                 <span className="text-rose-500 font-bold uppercase tracking-widest text-sm">About Me</span>
              </div>
              
-             <h2 className="text-4xl md:text-5xl font-bold text-white mb-8 leading-tight">
+             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-8 leading-tight">
                Software Engineer with a passion for <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-orange-500">Innovation</span>
              </h2>
              

@@ -8,8 +8,8 @@ const Hero: React.FC = () => {
     <section id="home" className="min-h-screen flex items-center pt-24 relative overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-900 via-gray-950 to-gray-950">
       
       {/* Dynamic Background Elements */}
-      <div className="absolute top-1/4 -right-20 w-[600px] h-[600px] bg-rose-600/10 rounded-full blur-[120px] pointer-events-none mix-blend-screen animate-pulse" style={{ animationDuration: '4s' }} />
-      <div className="absolute bottom-0 -left-20 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen" />
+      <div className="absolute top-1/4 -right-20 w-[80vw] h-[80vw] max-w-[600px] max-h-[600px] bg-rose-600/10 rounded-full blur-[120px] pointer-events-none mix-blend-screen animate-pulse" style={{ animationDuration: '4s' }} />
+      <div className="absolute bottom-0 -left-20 w-[70vw] h-[70vw] max-w-[500px] max-h-[500px] bg-blue-600/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen" />
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -24,19 +24,19 @@ const Hero: React.FC = () => {
                <span className="text-rose-400 font-semibold tracking-wide text-sm uppercase">👋 Welcome to my portfolio</span>
             </div>
             
-            <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 leading-tight tracking-tight">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 leading-tight tracking-tight">
               {profile.name.split(' ')[0]} <br/>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-orange-500">
                 {profile.name.split(' ').slice(1).join(' ')}
               </span>
             </h1>
             
-            <h2 className="text-2xl md:text-3xl text-gray-300 mb-8 font-light flex items-center gap-3">
+            <h2 className="text-xl sm:text-2xl md:text-3xl text-gray-300 mb-8 font-light flex items-center gap-3">
               <span className="w-12 h-[1px] bg-gray-500"></span>
               {profile.role}
             </h2>
             
-            <p className="text-gray-400 text-lg md:text-xl leading-relaxed max-w-xl mb-10 border-l-2 border-gray-700 pl-6">
+            <p className="text-gray-400 text-base sm:text-lg md:text-xl leading-relaxed max-w-xl mb-10 border-l-2 border-gray-700 pl-6">
               {profile.summary.substring(0, 150)}...
             </p>
 
@@ -65,7 +65,7 @@ const Hero: React.FC = () => {
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
             className="order-1 lg:order-2 flex justify-center relative"
           >
-            <div className="relative w-80 h-80 md:w-[500px] md:h-[500px]">
+            <div className="relative w-80 h-80 sm:w-96 sm:h-96 md:w-[500px] md:h-[500px]">
               {/* Complex circle decorations */}
               <div className="absolute inset-0 rounded-full border border-gray-800 animate-[spin_10s_linear_infinite]" />
               <div className="absolute inset-4 rounded-full border border-gray-800 border-dashed animate-[spin_15s_linear_infinite_reverse]" />

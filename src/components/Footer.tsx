@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
         <div className="flex flex-col md:flex-row justify-between items-center mb-12">
            <div className="mb-6 md:mb-0">
              <a href="#" className="text-2xl font-bold font-sans tracking-tight text-white group">
-                Wilson<span className="text-rose-500">Kinyua</span>
+                {profile.name.split(' ')[0]}<span className="text-rose-500">{profile.name.split(' ').slice(1).join(' ')}</span>
              </a>
              <p className="text-gray-500 mt-2 text-sm max-w-xs">
                 Building digital experiences with passion and precision.

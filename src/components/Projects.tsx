@@ -23,7 +23,7 @@ const Projects: React.FC = () => {
         <div className="flex flex-col md:flex-row justify-between items-end gap-6">
           <div className="max-w-2xl">
             <span className="text-rose-500 font-bold uppercase tracking-widest text-sm mb-3 block">Portfolio</span>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
               Selected <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-orange-500">Works</span>
             </h2>
             <p className="text-gray-400">
@@ -53,8 +53,8 @@ const Projects: React.FC = () => {
       </div>
 
       {/* Carousel Track */}
-      <div 
-        className="w-full overflow-x-auto pb-12 pt-4 snap-x snap-mandatory scrollbar-hide"
+      <div
+        className="w-full overflow-x-auto pb-12 pt-4 snap-x snap-mandatory [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-gray-800/50 [&::-webkit-scrollbar-thumb]:bg-rose-600 [&::-webkit-scrollbar-thumb]:rounded-full"
         style={{ scrollBehavior: 'smooth' }}
       > 
          <div 
@@ -68,7 +68,7 @@ const Projects: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 onClick={() => setSelectedProject(project)}
-                className="snap-center min-w-[260px] md:min-w-[300px] lg:min-w-[320px] group rounded-2xl bg-gray-900 border border-white/5 overflow-hidden hover:border-rose-500/30 transition-all duration-300 hover:shadow-2xl hover:shadow-rose-900/10 flex flex-col cursor-pointer relative"
+                className="snap-center min-w-[240px] sm:min-w-[280px] md:min-w-[300px] lg:min-w-[320px] group rounded-2xl bg-gray-900 border border-white/5 overflow-hidden hover:border-rose-500/30 transition-all duration-300 hover:shadow-2xl hover:shadow-rose-900/10 flex flex-col cursor-pointer relative"
               >
                 <div className="h-40 md:h-48 overflow-hidden relative">
                   <div className="absolute inset-0 bg-gray-900/20 group-hover:bg-transparent transition-colors z-10"></div>
@@ -136,7 +136,7 @@ const Projects: React.FC = () => {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
                 onClick={(e) => e.stopPropagation()}
-                className="bg-gray-900 border border-white/10 rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl relative flex flex-col"
+                className="bg-gray-900 border border-white/10 rounded-3xl w-full max-w-4xl max-h-[90dvh] overflow-y-auto shadow-2xl relative flex flex-col"
               >
                 {/* Close Button */}
                 <button 

@@ -21,7 +21,7 @@ const Skills: React.FC = () => {
        <div className="container mx-auto px-6 relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-20">
           <span className="text-rose-500 font-bold uppercase tracking-widest text-sm mb-3 block">My Arsenal</span>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
             Technical <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-orange-500">Skills</span>
           </h2>
           <p className="text-gray-400 text-lg">

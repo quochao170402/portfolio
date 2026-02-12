@@ -11,7 +11,7 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({ exp }) => {
   return (
     <div className="relative group">
       {/* Timeline Node */}
-      <span className="absolute -left-[41px] md:-left-[59px] top-0 h-6 w-6 rounded-full border-4 border-gray-950 bg-gray-800 group-hover:bg-rose-500 group-hover:scale-110 transition-all duration-300 z-10 shadow-[0_0_0_4px_rgba(3,7,18,1)]"></span>
+      <span className="absolute -left-[41px] sm:-left-[47px] md:-left-[59px] top-0 h-6 w-6 rounded-full border-4 border-gray-950 bg-gray-800 group-hover:bg-rose-500 group-hover:scale-110 transition-all duration-300 z-10 shadow-[0_0_0_4px_rgba(3,7,18,1)]"></span>
       
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
          <h4 className="text-2xl font-bold text-white group-hover:text-rose-500 transition-colors">{exp.role}</h4>
@@ -59,7 +59,7 @@ const Experience: React.FC = () => {
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-20">
           <span className="text-rose-500 font-bold uppercase tracking-widest text-sm mb-3 block">My Journey</span>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
             Education & <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-orange-500">Experience</span>
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto text-lg">
@@ -112,7 +112,7 @@ const Experience: React.FC = () => {
                 <h3 className="text-2xl font-bold text-white">Professional Experience</h3>
              </div>
 
-            <div className="space-y-12 relative border-l-2 border-gray-800 ml-3 md:ml-6 pl-8 md:pl-12 pb-4">
+            <div className="space-y-12 relative border-l-2 border-gray-800 ml-3 sm:ml-4 md:ml-6 pl-8 sm:pl-10 md:pl-12 pb-4">
               {experience.map((exp, index) => (
                 <ExperienceItem key={index} exp={exp} />
               ))}
